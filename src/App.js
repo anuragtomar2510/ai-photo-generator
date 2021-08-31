@@ -1,25 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
-
+import React, {useState} from 'react'
+import './App.css'
+import axios from 'axios'
+const apiKey = process.env.REACT_APP_API_KEY
+const url = `https://api.generated.photos/api/v1/faces?api_key=${apiKey}&order_by=random`
 function App() {
+
+  const [image, setImage] = useState('')
+
+  const clickHandler = () => {
+
+      axios.get(url)
+        .then(response => {
+            
+            const imgSrc = response.data.faces[0].urls[4][512]
+
+            if(imgSrc) {
+
+                setImage(imgSrc)
+
+            }
+        })
+        .catch(error => alert('There is some error!'))
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+        <div className="App">
+          <h1>AI Photo Generator</h1>
+          {image && <img src={image} alt="AI Faces" />}
+          <button type="button" onClick={clickHandler}>New Image</button>
+        </div>
+     
+  )
+
 }
 
-export default App;
+export default App
